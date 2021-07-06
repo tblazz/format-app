@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  get 'main/upload', as:"upload"
+  post "main/upload"
+  get 'main/edit', as:"edit"
+  get 'main/download', as:"download"
 
-  root "index#index"
-  post "upload", to: "index#upload"
-
+  root "main#upload"
 end
