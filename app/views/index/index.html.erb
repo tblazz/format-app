@@ -1,0 +1,115 @@
+<div class="container">
+
+  <%= form_tag({action: :upload}, multipart: true, class:"row g-3 needs-validation", novalidate: "novalidate") do %>
+
+    <div class="col-md-6">
+      <div class="row">
+        <label for="validationCustom01" class="form-label">Nom de l'événement</label>
+        <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="validationCustom02" class="form-label">Distance / Course</label>
+        <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="validationCustom04" class="form-label">State</label>
+        <select class="form-select" id="validationCustom04" required>
+          <option selected disabled value="">Choose...</option>
+          <option>...</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="validationCustom04" class="form-label">State</label>
+        <select class="form-select" id="validationCustom04" required>
+          <option selected disabled value="">Choose...</option>
+          <option>...</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="validationCustom02" class="form-label">Distance / Course</label>
+        <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="validationCustom02" class="form-label">Distance / Course</label>
+        <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 px-4 justify-content">
+      <br><br><br><br>
+      <div class="row">
+        <label class="form-label"></label>
+      </div>
+      <div class="row">
+        <%= file_field_tag 'xml_file', class:"form-control", type:"file" %>
+      </div>
+      <div class="row">
+        <label for="validationCustom04" class="form-label">State</label>
+      </div>
+      <div class="row">
+        <select class="form-select" id="validationCustom04" required>
+          <option selected disabled value="">Choose...</option>
+          <option>...</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+
+
+      <button class="btn btn-primary mt-5" type="submit">Importer le fichier</button>
+
+    </div>
+
+  <% end %>
+
+  <%#= form_tag({action: :upload}, multipart: true, class:"dropzone") do %><%# end %>
+
+</div>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+</script>
