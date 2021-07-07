@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
-  get 'main/new_file'
-  post "main/upload"
-  get 'main/edit', as:"edit"
-  get 'main/download', as:"download"
+  resources :dbfiles do
+    member do
+      get 'treatment'
+    end
+  end
+  # get 'main/new_file'
+  # post "main/upload"
+  # get 'main/edit', as:"edit"
+  # get 'main/download', as:"download"
 
-  root "main#new_file"
+  root "dbfiles#new"
+
 end

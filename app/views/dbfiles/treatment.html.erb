@@ -1,0 +1,59 @@
+<div class="container scroller">
+<table class="table">
+  <thead>
+    <tr>
+      <% @headers.each do |col| %>
+          <%#= f.select :work_entity, options_for_select(APP_VAR['investigator_work_entity'].map {|k| [k]}, @early_investigator.work_entity), {:include_blank => false}, :class=>"form-control select2-basic" %>
+        <th scope="col">
+          <select class="form-select form-select-sm w-100px">
+            <option selected disabled value="">Choose...</option>
+            <option>...</option>
+          </select>
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <thead>
+    <tr>
+      <% @headers.each do |col| %>
+        <th scope="col"><%= col %></th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+      <tr>
+        <% @headers.each_with_index do |col, index| %>
+          <td><%= @row1[index] %></td>
+        <% end %>
+      </tr>
+      <tr>
+        <% @headers.each_with_index do |col, index| %>
+          <td><%= @row2[index] %></td>
+        <% end %>
+      </tr>
+      <tr>
+        <% @headers.each_with_index do |col, index| %>
+          <td><%= @row3[index] %></td>
+        <% end %>
+      </tr>
+      <tr>
+        <% @headers.each_with_index do |col, index| %>
+          <td><%= @row4[index] %></td>
+        <% end %>
+      </tr>
+
+      <tr>
+        <% @headers.each_with_index do |col, index| %>
+          <% puts "FILE QUERYYYYY" %>
+          <% if is_column_empty?(@file, index, 2) %>
+            <td><input type="email" class="form-control" placeholder="Colonne vide"></td>
+          <% else %>
+            <td></td>
+          <% end %>
+        <% end %>
+      </tr>
+  </tbody>
+
+</table>
+</div>

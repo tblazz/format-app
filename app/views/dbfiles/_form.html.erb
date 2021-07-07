@@ -1,0 +1,19 @@
+<%= form_with model: dbfile, html: {method: :post, multipart: true, class:"row g-3 needs-validation", novalidate: "novalidate"} do |form| %>
+  <% if dbfile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(dbfile.errors.count, "error") %> prohibited this dbfile from being saved:</h2>
+
+      <ul>
+        <% dbfile.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.file_field 'file', class:"form-control", type:"file" %>
+
+  <div class="actions">
+    <%= form.submit 'Importer le fichier', class:"btn btn-primary mt-5"%>
+  </div>
+<% end %>
