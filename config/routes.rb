@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  get 'main/upload', as:"upload"
+  get 'main/new_file'
   post "main/upload"
   get 'main/edit', as:"edit"
   get 'main/download', as:"download"
 
-  root "main#upload"
+  root "main#new_file"
 end

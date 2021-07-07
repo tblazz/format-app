@@ -1,0 +1,59 @@
+<div class="container">
+<nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Library</li>
+  </ol>
+</nav>
+</div>
+
+<div class="container">
+
+  <%= form_with url: main_upload_path, html: {method: :post, multipart: true, class:"row g-3 needs-validation", novalidate: "novalidate"} do |form|%>
+
+    <div class="col-md-6">
+    
+    </div>
+
+    <div class="col-md-6 px-4 justify-content">
+     
+      <div class="row">
+        <%= form.file_field 'file', class:"form-control", type:"file" %>
+      </div>
+
+      </div>
+
+
+      <button class="btn btn-primary mt-5" type="submit">Importer le fichier</button>
+
+    </div>
+
+  <% end %>
+
+  <%#= form_tag({action: :upload}, multipart: true, class:"dropzone") do %><%# end %>
+
+</div>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+</script>
