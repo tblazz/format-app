@@ -78,6 +78,7 @@ freshstart_headers:
   - :"Points"
 
 fftri_headers:
+  - :"Clé manifestation"
   - :"Clé épreuve"
   - :"Licence N°"
   - :"Pass Compétition"

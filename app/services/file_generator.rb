@@ -16,13 +16,34 @@ class FileGenerator
       row4 = sheet.row(5)
       column_number = headers.size
 
+      #col_index =[{"1"=>"3"}, {"2"=>"4"}]
+      col_index = [3,4]
+      csv_row = []
+      
+      # csv_row[3] = shett.cell(2, 1)
+      # csv_row[4] = shett.cell(2, 2)
+
+
+      col_index.each_with_index do |value, index|
+        puts "INDEX"
+        puts sheet.cell(2, index+1)
+        puts "INDEX"
+        csv_row[col_index[index]] = sheet.cell(2, index+1)
+      end
+
+      puts "CSV_ROWWWWWWWWWWWWWWWWWWWWWWW"
+      puts csv_row.size
+      puts csv_row
+      puts "CSV_ROWWWWWWWWWWWWWWWWWWWWWWW"
+
       case format
       when 1.to_s
-        csv = CSV.generate(headers: true) do |csv|
+        csv = CSV.generate(col_sep: ";", headers: true) do |csv|
           csv << APP_VAR["freshstart_headers"]
+          #csv << sheet.cell()
         end
       when 2.to_s
-        csv = CSV.generate(headers: true) do |csv|
+        csv = CSV.generate(col_sep: ";", headers: true) do |csv|
           csv << APP_VAR["fftri_headers"]
         end
       end
