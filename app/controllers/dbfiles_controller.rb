@@ -1,5 +1,5 @@
 class DbfilesController < ApplicationController
-  before_action :set_dbfile, only: %i[ show edit update destroy treatment ]
+  before_action :set_dbfile, only: %i[ show edit update destroy treatment process_file download]
 
   # GET /dbfiles or /dbfiles.json
   def index
@@ -57,15 +57,34 @@ class DbfilesController < ApplicationController
 
   def treatment
     # @binary = @dbfile.file.download
-    @file = @dbfile
-    @rows = FileParser.new(@file).parse_file
-    puts "AFTER DLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+    @rows = FileParser.new(@dbfile).parse_file
     @headers = @rows[0]
     @row1 = @rows[1]
     @row2 = @rows[2]
     @row3 = @rows[3]
     @row4 = @rows[4]
+  end
 
+  def process_file
+    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format])
+    @dbfile.exported_file.attach(
+      io: StringIO.new(exported_file),
+      filename: 'raw_data.csv',
+      content_type: 'csv'
+    )
+
+    respond_to do |format| #need to add model in form to have format in client request
+      if @dbfile.exported_file.attached?
+        format.html { redirect_to download_dbfile_path(@dbfile), notice: "Votre fichier a été traité" }
+        format.json { render :show, status: :created, location: @dbfile }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @dbfile.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def download
   end
 
   private
@@ -76,6 +95,6 @@ class DbfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dbfile_params
-      params.fetch(:dbfile, {}).permit(:file)
+      params.fetch(:dbfile, {}).permit(:file, :format)
     end
 end

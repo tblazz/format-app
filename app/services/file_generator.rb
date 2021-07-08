@@ -3,9 +3,7 @@ class FileGenerator
     @file = file
   end
 
-  def parse_file
-
-
+  def generate_file(format)
     require 'roo'
     require 'roo-xls'
     begin
@@ -16,10 +14,21 @@ class FileGenerator
       row2 = sheet.row(3)
       row3 = sheet.row(4)
       row4 = sheet.row(5)
-      puts "TABLEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
       column_number = headers.size
-      puts "TABLEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-      return headers, row1, row2, row3, row4 
+
+      case format
+      when 1.to_s
+        csv = CSV.generate(headers: true) do |csv|
+          csv << APP_VAR["freshstart_headers"]
+        end
+      when 2.to_s
+        csv = CSV.generate(headers: true) do |csv|
+          csv << APP_VAR["fftri_headers"]
+        end
+      end
+
+      exported_file = csv
+      return exported_file
 
     rescue Zip::Error
       sheet = Roo::Spreadsheet.open(create_temp_file(@file))
