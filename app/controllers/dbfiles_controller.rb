@@ -58,7 +58,8 @@ class DbfilesController < ApplicationController
   def treatment
     # @binary = @dbfile.file.download
     @rows = FileParser.new(@dbfile).parse_file
-    @headers = @rows[0]
+    @final_headers = APP_VAR["freshstart_headers"].map{|k,v| v}
+    @initial_headers = @rows[0]
     @row1 = @rows[1]
     @row2 = @rows[2]
     @row3 = @rows[3]
@@ -67,13 +68,9 @@ class DbfilesController < ApplicationController
 
   def process_file
     col_index = params[:dbfile][:col_indexs].values().map.with_index {|x| x.to_hash.values }
+    first_row = 2#dbfile_params[:first_row]
 
-    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS "
-    puts col_index
-    puts col_index.class
-    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS "
-
-    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format])
+    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row)
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
       filename: 'raw_data.csv',

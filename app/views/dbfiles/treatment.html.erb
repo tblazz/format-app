@@ -3,10 +3,10 @@
 <table class="table">
   <thead>
     <tr>
-      <% @headers.each_with_index do |col, index| %>
+      <% @final_headers.each_with_index do |col, index| %>
         <th scope="col">
           <%= f.fields_for :col_indexs, index: index do |col| %>
-            <%= col.select :index, options_for_select(APP_VAR['variables'].map {|k, v| [v.to_s, k]}), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+            <%= col.select :index, options_for_select(APP_VAR['freshstart_headers'].map {|k, v| [v.to_s, k]}, APP_VAR['freshstart_headers'].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
           <% end %>
         </th>
       <% end %>
@@ -14,36 +14,36 @@
   </thead>
   <thead>
     <tr>
-      <% @headers.each do |col| %>
-        <th scope="col"><%= col %></th>
+      <% @final_headers.each_with_index do |col, index| %>
+        <th scope="col"><%= @initial_headers[index] %></th>
       <% end %>
     </tr>
   </thead>
 
   <tbody>
       <tr>
-        <% @headers.each_with_index do |col, index| %>
+        <% @final_headers.each_with_index do |col, index| %>
           <td><%= @row1[index] %></td>
         <% end %>
       </tr>
       <tr>
-        <% @headers.each_with_index do |col, index| %>
+        <% @final_headers.each_with_index do |col, index| %>
           <td><%= @row2[index] %></td>
         <% end %>
       </tr>
       <tr>
-        <% @headers.each_with_index do |col, index| %>
+        <% @final_headers.each_with_index do |col, index| %>
           <td><%= @row3[index] %></td>
         <% end %>
       </tr>
       <tr>
-        <% @headers.each_with_index do |col, index| %>
+        <% @final_headers.each_with_index do |col, index| %>
           <td><%= @row4[index] %></td>
         <% end %>
       </tr>
 
       <tr>
-        <% @headers.each_with_index do |col, index| %>
+        <% @final_headers.each_with_index do |col, index| %>
           <% puts "FILE QUERYYYYY" %>
           <% if is_column_empty?(@dbfile, index, 2) %>
             <td><input type="email" class="form-control" placeholder="Colonne vide"></td>
