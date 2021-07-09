@@ -66,9 +66,16 @@ class DbfilesController < ApplicationController
   end
 
   def process_file
+    col_index = params[:dbfile][:col_indexs].values().map.with_index {|x| x.to_hash.values }
+
+    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS "
+    puts col_index
+    puts col_index.class
+    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS "
+
     exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format])
     @dbfile.exported_file.attach(
-      io: StringIO.new(exported_file),
+      io: File.open(exported_file.path),
       filename: 'raw_data.csv',
       content_type: 'csv'
     )
@@ -95,6 +102,6 @@ class DbfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dbfile_params
-      params.fetch(:dbfile, {}).permit(:file, :format)
+      params.fetch(:dbfile, {}).permit(:file, :format, col_indexss_attributes: [:index])
     end
 end

@@ -7,48 +7,44 @@ class FileGenerator
     require 'roo'
     require 'roo-xls'
     begin
+
+#   csv = CSV.generate(col_sep: ";", headers: true) do |csv|
+#     csv << APP_VAR["freshstart_headers"]
+#     #csv << csv_rows
+#   end
+
+      col_index = [2, 1, 3, 4, 5, 6, 7, 8, 9, 10,	11,	12,	13,	14,	15,	16,	17,	18]
+
       sheet = Roo::Spreadsheet.open(create_temp_file(@file), extension: :xlsx)
-      #sheet.parse(headers: true)
-      headers = sheet.row(1)
-      row1 = sheet.row(2)
-      row2 = sheet.row(3)
-      row3 = sheet.row(4)
-      row4 = sheet.row(5)
-      column_number = headers.size
+      @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
 
-      #col_index =[{"1"=>"3"}, {"2"=>"4"}]
-      col_index = [3,4]
-      csv_row = []
-      
-      # csv_row[3] = shett.cell(2, 1)
-      # csv_row[4] = shett.cell(2, 2)
-
-
-      col_index.each_with_index do |value, index|
-        puts "INDEX"
-        puts sheet.cell(2, index+1)
-        puts "INDEX"
-        csv_row[col_index[index]] = sheet.cell(2, index+1)
-      end
-
-      puts "CSV_ROWWWWWWWWWWWWWWWWWWWWWWW"
-      puts csv_row.size
-      puts csv_row
-      puts "CSV_ROWWWWWWWWWWWWWWWWWWWWWWW"
 
       case format
       when 1.to_s
-        csv = CSV.generate(col_sep: ";", headers: true) do |csv|
-          csv << APP_VAR["freshstart_headers"]
-          #csv << sheet.cell()
+        CSV.open(@tmp_csv.path, "a+", col_sep: ";", headers: true) do |new_csv_row|
+          new_csv_row << APP_VAR["freshstart_headers"].map{|k| k.to_s.force_encoding('UTF-8')}
+          (sheet.first_row..sheet.last_row).each do |row|
+            csv_row = []
+            col_index.each_with_index do |value, index|
+              csv_row[col_index[index]-1] = sheet.cell(row, index+1)
+            end
+            new_csv_row << csv_row
+          end
         end
       when 2.to_s
-        csv = CSV.generate(col_sep: ";", headers: true) do |csv|
-          csv << APP_VAR["fftri_headers"]
+        CSV.open(@tmp_csv.path, "a+", col_sep: ";", headers: true) do |new_csv_row|
+          new_csv_row << APP_VAR["fftri_headers"].map{|k| k.to_s.force_encoding('UTF-8')}
+          (sheet.first_row..sheet.last_row).each do |row|
+            csv_row = []
+            col_index.each_with_index do |value, index|
+              csv_row[col_index[index]-1] = sheet.cell(row, index+1)
+            end
+            new_csv_row << csv_row
+          end
         end
       end
 
-      exported_file = csv
+      exported_file = @tmp_csv
       return exported_file
 
     rescue Zip::Error

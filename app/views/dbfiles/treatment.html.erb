@@ -1,15 +1,13 @@
-<%= form_with url:"dbfiles/process", method: :post do |f| %>
+<%= form_with model: @dbfile, url: process_file_dbfile_path, method: :post, format: :html do |f| %>
 <div class="container scroller">
 <table class="table">
   <thead>
     <tr>
-      <% @headers.each do |col| %>
-        <%#= f.select :work_entity, options_for_select(APP_VAR['variables'].map {|k| [k]}, APP_VAR['variables']), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+      <% @headers.each_with_index do |col, index| %>
         <th scope="col">
-          <select class="form-select form-select-sm w-100px">
-            <option selected disabled value="">Choose...</option>
-            <option>...</option>
-          </select>
+          <%= f.fields_for :col_indexs, index: index do |col| %>
+            <%= col.select :index, options_for_select(APP_VAR['variables'].map {|k, v| [v.to_s, k]}), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+          <% end %>
         </th>
       <% end %>
     </tr>
@@ -59,13 +57,11 @@
 </table>
 </div>
 
-
-<% end %>
-
-
-<%= form_with model: @dbfile, url: process_file_dbfile_path, method: :post, format: :html do |f| %>
   <%= f.select :format, options_for_select([['Freshstart', 1], ['FFTri', 2]]) %>
   <%= f.submit %>
+
+
 <% end %>
+
 
 
