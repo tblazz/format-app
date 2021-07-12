@@ -67,7 +67,8 @@ class DbfilesController < ApplicationController
   end
 
   def process_file
-    col_index = params[:dbfile][:col_indexs].values().map.with_index {|x| x.to_hash.values }
+    #params[:dbfile][:col_indexs].values().map.with_index {|x| x.to_hash.values }
+    col_index = dbfile_params[:col_indexs].values().map.with_index {|x| x.to_hash.values }
     first_row = 2#dbfile_params[:first_row]
 
     exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row)
@@ -99,6 +100,6 @@ class DbfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dbfile_params
-      params.fetch(:dbfile, {}).permit(:file, :format, col_indexss_attributes: [:index])
+      params.fetch(:dbfile, {}).permit(:file, :format, col_indexs: {})
     end
 end
