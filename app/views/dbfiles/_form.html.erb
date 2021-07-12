@@ -1,4 +1,5 @@
 <%= form_with model: dbfile, html: {method: :post, multipart: true, class:"row g-3 needs-validation", novalidate: "novalidate"} do |form| %>
+
   <% if dbfile.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(dbfile.errors.count, "error") %> prohibited this dbfile from being saved:</h2>
@@ -11,9 +12,122 @@
     </div>
   <% end %>
 
-  <%= form.file_field 'file', class:"form-control", type:"file" %>
+  <div class="col-md-6">
+    <div class="row my-3">
+      <label for="validationCustom01" class="form-label col-sm-3">Nom de l'événement</label>
+      <div class="col-sm-9">
+        <%= form.text_field :event_name, class:"form-control", id:"validationCustom01", required: false %>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+    </div>
 
-  <div class="actions">
-    <%= form.submit 'Importer le fichier', class:"btn btn-primary mt-5"%>
+    <div class="row my-3">
+      <label for="validationCustom02" class="form-label col-sm-3">Distance / Course</label>
+      <div class="col-sm-9">
+        <%= form.number_field :distance, class:"form-control", id:"validationCustom02", required: false %>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <label for="validationCustom03" class="form-label col-sm-3">Sport</label>
+      <div class="col-sm-9">
+        <%= form.select :sport, options_for_select(APP_VAR['sports'].map {|k, v| [v.to_s, k]}, APP_VAR['sports'].keys.last), {:include_blank => false}, class:"form-select", id:"validationCustom03", required: false %>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <label for="validationCustom04" class="form-label col-sm-3">Format</label>
+      <div class="col-sm-9">
+        <%= form.select :format, options_for_select([['Freshstart', 1], ['FFTri', 2]]), {:include_blank => false}, class:"form-select", id:"validationCustom04", required: false %>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 border border-primary">
+      <div class="col">
+        <div class="row my-2">
+          <label for="validationCustom05" class="form-label col-sm-3">Clé manifestation</label>
+          <div class="col-sm-9">
+            <%= form.text_field :manif_key, class:"form-control", id:"validationCustom05", required: false %>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+        </div>
+
+        <div class="row my-2">
+          <label for="validationCustom06" class="form-label col-sm-3">Clé épreuve</label>
+          <div class="col-sm-9">
+            <%= form.text_field :race_key, class:"form-control", id:"validationCustom06", required: false %>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+        </div>
+
+        <div class="row align-item-end" >
+          <p class="d-flex justify-content-end text-primary">FF Triathlon</p>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="col-md-6 px-4 justify-content">
+    <div class="row my-3">
+      <%= form.file_field 'file', class:"form-control", type:"file", required: true %>
+    </div>
+
+    <div class="row my-3">
+      <label for="validationCustom07" class="form-label col-sm-3">Template</label>
+      <div class="col-sm-9">
+        <%= form.select :sport, options_for_select(APP_VAR['sports'].map {|k, v| [v.to_s, k]}, APP_VAR['sports'].keys.last), {:include_blank => false}, class:"form-select", id:"validationCustom07", required: false %>
+        <div class="invalid-feedback">
+          Please select a valid state.
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <%= form.submit 'Importer le fichier', class:"btn btn-primary"%>
+    </div>
+  </div>
+
 <% end %>
+
+<script>
+
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+element = document.getElementById('importer')
+element.classList.add('active');
+
+</script>

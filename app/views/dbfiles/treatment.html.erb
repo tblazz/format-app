@@ -1,64 +1,82 @@
 <%= form_with model: @dbfile, url: process_file_dbfile_path, method: :post, format: :html do |f| %>
-<div class="container scroller">
-<table class="table">
-  <thead>
-    <tr>
-      <% @final_headers.each_with_index do |col, index| %>
-        <th scope="col">
-          <%= f.fields_for :col_indexs, index: index do |col| %>
-            <%= col.select :index, options_for_select(APP_VAR['freshstart_headers'].map {|k, v| [v.to_s, k]}, APP_VAR['freshstart_headers'].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+  <div class="container scroller">
+    <table class="table">
+      <thead>
+        <tr>
+          <% @final_headers.each_with_index do |col, index| %>
+            <th scope="col">
+              <%= f.fields_for :col_indexs, index: index do |col| %>
+                <%= col.select :index, options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+              <% end %>
+            </th>
           <% end %>
-        </th>
-      <% end %>
-    </tr>
-  </thead>
-  <thead>
-    <tr>
-      <% @final_headers.each_with_index do |col, index| %>
-        <th scope="col"><%= @initial_headers[index] %></th>
-      <% end %>
-    </tr>
-  </thead>
-
-  <tbody>
-      <tr>
-        <% @final_headers.each_with_index do |col, index| %>
-          <td><%= @row1[index] %></td>
-        <% end %>
-      </tr>
-      <tr>
-        <% @final_headers.each_with_index do |col, index| %>
-          <td><%= @row2[index] %></td>
-        <% end %>
-      </tr>
-      <tr>
-        <% @final_headers.each_with_index do |col, index| %>
-          <td><%= @row3[index] %></td>
-        <% end %>
-      </tr>
-      <tr>
-        <% @final_headers.each_with_index do |col, index| %>
-          <td><%= @row4[index] %></td>
-        <% end %>
-      </tr>
-
-      <tr>
-        <% @final_headers.each_with_index do |col, index| %>
-          <% puts "FILE QUERYYYYY" %>
-          <% if is_column_empty?(@dbfile, index, 2) %>
-            <td><input type="email" class="form-control" placeholder="Colonne vide"></td>
-          <% else %>
-            <td></td>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <% @final_headers.each_with_index do |col, index| %>
+            <th scope="col"><%= @initial_headers[index] %></th>
           <% end %>
-        <% end %>
-      </tr>
-  </tbody>
+        </tr>
+      </thead>
 
-</table>
-</div>
+      <tbody>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+              <td><%= @row1[index] %></td>
+            <% end %>
+          </tr>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+              <td><%= @row2[index] %></td>
+            <% end %>
+          </tr>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+              <td><%= @row3[index] %></td>
+            <% end %>
+          </tr>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+              <td><%= @row4[index] %></td>
+            <% end %>
+          </tr>
 
-  <%= f.select :format, options_for_select([['Freshstart', 1], ['FFTri', 2]]) %>
-  <%= f.submit %>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+
+              <% puts "FILE QUERYYYYY" %>
+
+              <%= f.fields_for :empty_cols, index: index do |col| %>
+                <% if is_column_empty?(@dbfile, index, 2) %>
+                  <td>
+                    <%= col.text_field :empty_value, class:"form-control", placeholder:"Colonne vide" %>
+                  </td>
+                <% else %>
+                  <td>
+                    <%= col.hidden_field :empty_value, class:"form-control", placeholder:"Colonne vide" %>
+                  </td>
+                <% end %>
+              <% end %>
+
+            <% end %>
+          </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="row my-3">
+    <div class="col">
+      <%= f.hidden_field :format, value: @format %>
+      <%= f.submit 'Générer le fichier', class:"btn btn-primary"%>
+    </div>
+  </div>
 
 
 <% end %>
+
+<script>
+  element = document.getElementById('traiter')
+  element.classList.add('active');
+</script>

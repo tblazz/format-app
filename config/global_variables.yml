@@ -113,3 +113,10 @@ fftri_headers:
   30	:	"Type de temps"
   31	:	"Temps"
   32	:	"Rang temps"
+  33  : "FF Tri"
+
+sports:
+  1 : "Trail"
+  2 : "XTtrail"
+  3 : "Triathlon"
+  4 : "Sports"
