@@ -1,1 +1,48 @@
-<%= link_to 'DL', rails_blob_path(@dbfile.exported_file, disposition: "attachment") %>
+<div class="container scroller">
+  <table class="table">
+
+    <thead>
+      <tr>
+        <% @rows[0].each_with_index do |col, index| %>
+          <th scope="col"><%= @rows[0][index] %></th>
+        <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <% @rows[0].each_with_index do |col, index| %>
+            <td><%= @rows[1][index] %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <% @rows[0].each_with_index do |col, index| %>
+            <td><%= @rows[2][index] %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <% @rows[0].each_with_index do |col, index| %>
+            <td><%= @rows[3][index] %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <% @rows[0].each_with_index do |col, index| %>
+            <td><%= @rows[4][index] %></td>
+          <% end %>
+        </tr>
+
+    </tbody>
+
+  </table>
+</div>
+
+<div class="row my-3">
+  <div class="col">
+    <%= link_to 'Télécharger le fichier', rails_blob_path(@dbfile.exported_file, disposition: "attachment"), class:"btn btn-primary" %>
+  </div>
+</div>
+
+<script>
+  document.getElementById('traiter').classList.remove('active');
+  document.getElementById('télécharger').classList.add('active');
+</script>

@@ -58,40 +58,18 @@ class DbfilesController < ApplicationController
 
   def treatment
     @format = params[:format].to_i
-
-
-    puts "FORMATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-    puts params[:format].to_i.class
-    puts @format
-    puts "FORMATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-
-
-    # @binary = @dbfile.file.download
-    @rows = FileParser.new(@dbfile).parse_file
-
+    @rows = FileParser.new(@dbfile).parse_file("file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
-    puts "HEADERSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-    puts @headers
-    puts "HEADERSSSSSSSSSSSSSSSSSSSSSSSSSSS"
     @final_headers = APP_VAR["#{@headers}"].map{|k,v| v}
-    @initial_headers = @rows[0]
-    @row1 = @rows[1]
-    @row2 = @rows[2]
-    @row3 = @rows[3]
-    @row4 = @rows[4]
   end
 
   def process_file
-
-    #params[:dbfile][:col_indexs].values().map.with_index {|x| x.to_hash.values }
     col_index = dbfile_params[:col_indexs].values().map.with_index {|x| x.to_hash.values }
     empty_cols = dbfile_params[:empty_cols].values().map.with_index {|x| x.to_hash.values }
-    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-    puts empty_cols[0].first.blank?
-    puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-    first_row = 2#dbfile_params[:first_row]
+    first_row = dbfile_params[:first_row].to_i
 
     exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols)
+    
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
       filename: 'raw_data.csv',
@@ -110,6 +88,9 @@ class DbfilesController < ApplicationController
   end
 
   def download
+    @format = params[:format].to_i
+    @rows = FileParser.new(@dbfile).parse_file("exported_file")
+    @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
   end
 
   private
@@ -120,6 +101,13 @@ class DbfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dbfile_params
-      params.fetch(:dbfile, {}).permit(:file, :format, :event_name, :distance, :sport, :manif_key, :race_key, col_indexs: {}, empty_cols: {})
+      params.fetch(:dbfile, {}).permit(:file,
+        :format,
+        :event_name,
+        :distance,
+        :sport,
+        :manif_key,
+        :race_key,
+        :first_row, col_indexs: {}, empty_cols: {})
     end
 end

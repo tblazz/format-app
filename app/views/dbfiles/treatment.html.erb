@@ -8,6 +8,11 @@
               <%= f.fields_for :col_indexs, index: index do |col| %>
                 <%= col.select :index, options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
               <% end %>
+
+              <%#= f.fields_for :col_indexs do |col| %>
+                <%#= col.select :"#{index}", options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+              <%# end %>
+
             </th>
           <% end %>
         </tr>
@@ -15,7 +20,7 @@
       <thead>
         <tr>
           <% @final_headers.each_with_index do |col, index| %>
-            <th scope="col"><%= @initial_headers[index] %></th>
+            <th scope="col"><%= @rows[0][index] %></th>
           <% end %>
         </tr>
       </thead>
@@ -23,29 +28,27 @@
       <tbody>
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
-              <td><%= @row1[index] %></td>
+              <td><%= @rows[1][index] %></td>
             <% end %>
           </tr>
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
-              <td><%= @row2[index] %></td>
+              <td><%= @rows[2][index] %></td>
             <% end %>
           </tr>
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
-              <td><%= @row3[index] %></td>
+              <td><%= @rows[3][index] %></td>
             <% end %>
           </tr>
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
-              <td><%= @row4[index] %></td>
+              <td><%= @rows[4][index] %></td>
             <% end %>
           </tr>
 
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
-
-              <% puts "FILE QUERYYYYY" %>
 
               <%= f.fields_for :empty_cols, index: index do |col| %>
                 <% if is_column_empty?(@dbfile, index, 2) %>
@@ -64,6 +67,13 @@
       </tbody>
 
     </table>
+  </div>
+
+  <div class="row my-3">
+    <label class="form-label col-sm-2">Première ligne à traiter</label>
+    <div class="col-sm-2">
+      <%= f.number_field :first_row, step: 1, value: 2, class:"form-control", required: true %>
+    </div>
   </div>
 
   <div class="row my-3">
