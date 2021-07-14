@@ -63,13 +63,16 @@ class FileGenerator
           csv_row[col_index_array[index].first.to_i-1] = sheet.cell(row, index+1) #|| reformat(sheet.cell(row, index+1))
         end
 
+
+        format_csv_row(csv_row, csv_headers)
+
+        
         # If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
           csv_row[index] = empty_cols_array[index].first if !empty_cols_array[index].first.blank? 
         end
 
-        format_csv_row(csv_row, csv_headers)
-
+        
         new_csv_row << csv_row
       end
     end
@@ -103,34 +106,20 @@ class FileGenerator
     puts "NONN FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
 
     headers.each_with_index do |cell, index|
-      puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-
-      puts cell == "Cat"
-      puts cell == "Tél"
-      puts cell == "Clas."
-      puts cell == "Cat"
-
-      puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-
       if !row[index].blank?
-        if cell == "Doss." #|| cell == "Dos." || cell == "Dossard" || cell =="Dos"
+        case cell
+        when "Doss." #|| cell == "Dos." || cell == "Dossard" || cell =="Dos"
           row[index] = row[index].delete('^0-9')
-        elsif cell = "Tél" #|| cell == "Téléphone" || cell == "tel" || cell == "tél"
+        when "Tél" #|| cell == "Téléphone" || cell == "tel" || cell == "tél"
           row[index] = row[index].gsub('0', '33').gsub(' ', '') if row[index][0] == '0'
-        elsif cell == "Clas." #|| cell == "tel" || cell == "tél" || "Tél"
-          row[index] = row[index].delete('^0-9')
-
-        elsif cell == "Cat"
-          puts "CATEGORYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+        when "Clas." #|| cell == "tel" || cell == "tél" || "Tél"
+          row[index] = row[index].to_s.gsub('.', '')
+        when "Cat"
           row[index] = row[index].gsub('M', 'V')
           row[index] = row[index][0,row[index].length-1] if row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H')
-
         end
       end
     end
-
-
-
 
     puts "FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
     puts row
