@@ -9,7 +9,7 @@ class FileGenerator
     begin
       #col_index = [2, 1, 3, 4, 5, 6, 7, 8, 9, 10,	11,	12,	13,	14,	15,	16,	17,	18]
       sheet = Roo::Spreadsheet.open(create_temp_file(@file), extension: :xlsx)
-      #new_sheet = reformat_sheet(sheet, headers_row)
+      new_sheet = format_sheet_column(sheet, headers_row)
     
       ##### TO IMPROVE #######
       @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
@@ -103,29 +103,42 @@ class FileGenerator
     puts "NONN FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
 
     headers.each_with_index do |cell, index|
+      puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+
+      puts cell == "Cat"
+      puts cell == "Tél"
+      puts cell == "Clas."
+      puts cell == "Cat"
+
+      puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+
       if !row[index].blank?
-        puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-        puts cell
-        puts row[index]
-        puts "CELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-        if cell == "Doss." || cell == "Dos." || cell == "Dossard" || cell =="Dos"
+        if cell == "Doss." #|| cell == "Dos." || cell == "Dossard" || cell =="Dos"
           row[index] = row[index].delete('^0-9')
-        elsif cell == "Téléphone" || cell == "tel" || cell == "tél" || "Tél"
-          puts "TELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-          puts row[index]
-          puts row[index].class
-          puts row[index].gsub('0', '33')
-          puts "TELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+        elsif cell = "Tél" #|| cell == "Téléphone" || cell == "tel" || cell == "tél"
           row[index] = row[index].gsub('0', '33').gsub(' ', '') if row[index][0] == '0'
-          row[index] = row[index].gsub(' ', '')
+        elsif cell == "Clas." #|| cell == "tel" || cell == "tél" || "Tél"
+          row[index] = row[index].delete('^0-9')
+
+        elsif cell == "Cat"
+          puts "CATEGORYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+          row[index] = row[index].gsub('M', 'V')
+          row[index] = row[index][0,row[index].length-1] if row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H')
+
         end
       end
     end
 
 
+
+
     puts "FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
     puts row
     puts "FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+  end
+
+  def format_sheet_column(initial_col_index, final_col_index)
+    
   end
 
 
