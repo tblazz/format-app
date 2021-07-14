@@ -67,8 +67,9 @@ class DbfilesController < ApplicationController
     col_index = dbfile_params[:col_indexs].values().map.with_index {|x| x.to_hash.values }
     empty_cols = dbfile_params[:empty_cols].values().map.with_index {|x| x.to_hash.values }
     first_row = dbfile_params[:first_row].to_i
+    headers_row = dbfile_params[:headers_row].to_i
 
-    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols)
+    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols, headers_row)
     
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
@@ -108,6 +109,8 @@ class DbfilesController < ApplicationController
         :sport,
         :manif_key,
         :race_key,
-        :first_row, col_indexs: {}, empty_cols: {})
+        :first_row,
+        :headers_row,
+        col_indexs: {}, empty_cols: {})
     end
 end

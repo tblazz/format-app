@@ -77,6 +77,13 @@
   </div>
 
   <div class="row my-3">
+    <label class="form-label col-sm-2">Ligne des headers</label>
+    <div class="col-sm-2">
+      <%= f.number_field :headers_row, step: 1, value: 2, class:"form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="row my-3">
     <div class="col">
       <%= f.hidden_field :format, value: @format %>
       <%= f.submit 'Générer le fichier', class:"btn btn-primary"%>
