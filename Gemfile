@@ -59,4 +59,5 @@ gem 'dotenv-rails', '~> 2.1'
 gem 'table_print', '~> 1.5', '>= 1.5.6'
 gem "roo", "~> 2.8.0"
 gem 'roo-xls'
+gem 'write_xlsx'
 

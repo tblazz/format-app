@@ -207,9 +207,14 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    write_xlsx (1.07.0)
+      rubyzip (>= 1.0.0)
+      zip-zip
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.4.2)
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   x86_64-linux
@@ -236,6 +241,7 @@ DEPENDENCIES
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
+  write_xlsx
 
 RUBY VERSION
    ruby 2.7.3p183

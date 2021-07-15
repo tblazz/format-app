@@ -60,7 +60,7 @@ class DbfilesController < ApplicationController
     @format = params[:format].to_i
     @rows = FileParser.new(@dbfile).parse_file("file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
-    @final_headers = APP_VAR["#{@headers}"].map{|k,v| v}
+    @final_headers = @rows[1]#APP_VAR["#{@headers}"].map{|k,v| v}
   end
 
   def process_file

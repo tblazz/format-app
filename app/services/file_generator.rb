@@ -9,7 +9,11 @@ class FileGenerator
     begin
       #col_index = [2, 1, 3, 4, 5, 6, 7, 8, 9, 10,	11,	12,	13,	14,	15,	16,	17,	18]
       sheet = Roo::Spreadsheet.open(create_temp_file(@file), extension: :xlsx)
-      new_sheet = format_sheet_column(sheet, headers_row)
+      class_cat_array = class_cat_calculate(sheet, headers_row, first_row)
+
+      puts 'catcollllllllllllllllllllllllllllllll'
+      puts class_cat_array
+      puts 'catcollllllllllllllllllllllllllllllll'
     
       ##### TO IMPROVE #######
       @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
@@ -72,6 +76,9 @@ class FileGenerator
           csv_row[index] = empty_cols_array[index].first if !empty_cols_array[index].first.blank? 
         end
 
+        #class_cat_array.each do |cat_class|
+        #  csv_row << cat_class
+        #end
         
         new_csv_row << csv_row
       end
@@ -81,34 +88,15 @@ class FileGenerator
 
 
 
-  # def reformat_sheet(sheet, headers_row)
-  #   sheet.row(headers_row).each_with_index do |cel, index|
-  #     reformat_doss(sheet, index) if cel == "Doss." || cel == "Dos." || cel == "Dossard" || cel =="Dos"
-
-  #   end
-  # end
-
-  # def reformat_doss(row)
-  #   sheet.column(index + 1).drop(1).each_with_index do |cel, row_index|
-  #     puts cel
-  #     puts cel.class 
-  #     puts cel.delete('^0-9')
-  #     puts index
-  #     #sheet.cell(2,2) = "cel.delete('^0-9')" 
-  #   end
-  # end
-
 
 
   def format_csv_row(row, headers)
-    puts "NONN FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
-    puts row
-    puts "NONN FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+
 
     headers.each_with_index do |cell, index|
       if !row[index].blank?
         case cell
-        when "Doss." #|| cell == "Dos." || cell == "Dossard" || cell =="Dos"
+        when "Doss." || "Dossard" #|| cell == "Dos." || cell == "Dossard" || cell =="Dos"
           row[index] = row[index].delete('^0-9')
         when "Tél" #|| cell == "Téléphone" || cell == "tel" || cell == "tél"
           row[index] = row[index].gsub('0', '33').gsub(' ', '') if row[index][0] == '0'
@@ -117,17 +105,37 @@ class FileGenerator
         when "Cat"
           row[index] = row[index].gsub('M', 'V')
           row[index] = row[index][0,row[index].length-1] if row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H')
+        when "Sexe"
+          row[index] = row[index].gsub('Femme', 'F').gsub('Homme', 'H')
+        when "Temps"
+          row[index] = '0' + row[index] if row[index][1] == 'h' || row[index][1] == ':'
+          row[index] = '00:' + row[index] if row[index][2] == ":" && row[index].length == 5
+          row[index] = row[index].gsub(',00', '').gsub('sec', '').gsub('h', ':').gsub('m', ':')
+        when "Distance" || "Distance épreuve"
+          row[index] = row[index].to_s.gsub('km', '')
+          row[index] = row[index].to_i / 1000 if row[index].to_i > 500
         end
       end
     end
 
-    puts "FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
-    puts row
-    puts "FORMATEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+
   end
 
-  def format_sheet_column(initial_col_index, final_col_index)
+  def class_cat_calculate(sheet, headers_row, first_row)
     
+    class_array = []
+    class_cat_array = []
+    cat_col_index = sheet.row(headers_row).index('Catégorie')
+    cat_col = sheet.column(cat_col_index + 1)
+
+
+    cat_col[first_row..cat_col.length].each do |row| 
+      class_array << row
+      class_cat_array << class_array.count(row)
+    end
+
+    return class_cat_array
+
   end
 
 
