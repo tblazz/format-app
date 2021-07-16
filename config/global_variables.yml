@@ -77,8 +77,7 @@ freshstart_headers:
   17	:	"Sexe"
   18	:	"Tél"
   19	:	"Temps"
-  20	:	"FRESHSTART"
-
+  20  : "FRESHSTART"
 
 fftri_headers:
   1	: "Catégorie dâ€™Ã¢ge"
@@ -113,7 +112,7 @@ fftri_headers:
   30	: "Type discipline épreuve"
   31	: "Type discipline épreuve"
   32	: "Type discipline épreuve"
-  33	: "FF Tri"
+  33  : "FFTRI"
 
 
 sports:

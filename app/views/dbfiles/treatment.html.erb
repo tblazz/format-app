@@ -6,7 +6,7 @@
           <% @final_headers.each_with_index do |col, index| %>
             <th scope="col">
               <%= f.fields_for :col_indexs, index: index do |col| %>
-                <%= col.select :index, options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
+                <%= col.select :index, options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => true}, :class=>"form-select form-select-sm w-100px" %>
               <% end %>
 
               <%#= f.fields_for :col_indexs do |col| %>
@@ -46,6 +46,11 @@
               <td><%= @rows[4][index] %></td>
             <% end %>
           </tr>
+          <tr>
+            <% @final_headers.each_with_index do |col, index| %>
+              <td><%= @rows[5][index] %></td>
+            <% end %>
+          </tr>
 
           <tr>
             <% @final_headers.each_with_index do |col, index| %>
@@ -79,7 +84,7 @@
   <div class="row my-3">
     <label class="form-label col-sm-2">Ligne des headers</label>
     <div class="col-sm-2">
-      <%= f.number_field :headers_row, step: 1, value: 2, class:"form-control", required: true %>
+      <%= f.number_field :headers_row, step: 1, value: 1, class:"form-control", required: true %>
     </div>
   </div>
 

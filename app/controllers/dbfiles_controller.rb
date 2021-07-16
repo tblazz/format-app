@@ -89,10 +89,6 @@ class DbfilesController < ApplicationController
   end
 
   def download
-    puts "DOWNLOADDDDDDDDDDDDDDDDDDDDDDDD"
-    puts "DOWNLOADDDDDDDDDDDDDDDDDDDDDDDD"
-    puts "DOWNLOADDDDDDDDDDDDDDDDDDDDDDDD"
-    puts "DOWNLOADDDDDDDDDDDDDDDDDDDDDDDD"
     @format = params[:format].to_i
     @rows = FileParser.new(@dbfile).parse_file("exported_file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
