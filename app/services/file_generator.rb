@@ -14,12 +14,14 @@ class FileGenerator
     end
 
     class_cat_array = class_cat_calculate(sheet, headers_row, first_row)
+    class_sex_array = class_sex_calculate(sheet, headers_row, first_row)
+
     @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
     case format
     when 1.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array)
+      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
     when 2.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array)
+      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
     end
 
     exported_file = @tmp_csv
@@ -34,28 +36,33 @@ class FileGenerator
     @tmp
   end
 
-  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array)
+  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
     CSV.open(tmp_csv.path, "a+", col_sep: ";", headers: true) do |new_csv_row|
       csv_headers = APP_VAR["#{headers}"].map{|k,v| v.to_s.force_encoding('UTF-8')}
       new_csv_row << csv_headers
       (first_row..sheet.last_row).each_with_index do |row, row_index|
 
         csv_row = []
+
+        average_speed_calculate(sheet, csv_row, headers_row, row, headers)
         # Writing inital file columns in final file selected columns
         col_index_array.each_with_index do |value, col_index|
           csv_row[col_index_array[col_index].first.to_i-1] = sheet.cell(row, col_index+1)
         end
 
+        #remove useless char, formating datas in csv row
         format_csv_row(csv_row, csv_headers)
+        #add category rank if "Clt Cat" is not in header sheet
+        add_class_cat(csv_row, class_cat_array, row_index, headers) if !sheet.row(headers_row).include?("Clt Cat")
+        #add sex rank
+        add_class_sex(csv_row, class_sex_array, row_index, headers)
+
 
         #If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
           csv_row[index] = empty_cols_array[index].first if !empty_cols_array[index].first.blank? 
         end
 
-        csv_row[3] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "freshstart_headers" #if clas cat non présent
-        csv_row[15] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
-        
         new_csv_row << csv_row
       end
     end
@@ -93,6 +100,10 @@ class FileGenerator
     class_array = []
     class_cat_array = []
     cat_col_index = sheet.row(headers_row).index('Catégorie')
+    # ["Catégorie"].each do |str|
+    #   index = sheet.row(headers_row).index(str)
+    #   cat_col_index = index if !index.nil?
+    # end
 
     return if cat_col_index.nil?
     cat_col = sheet.column(cat_col_index + 1)
@@ -103,6 +114,75 @@ class FileGenerator
     end
 
     return class_cat_array
+  end
+
+  def class_sex_calculate(sheet, headers_row, first_row)
+    class_array = []
+    class_sex_array = []
+    sex_col_index = sheet.row(headers_row).index('Sx') || sex_col_index = sheet.row(headers_row).index('SEXE')
+
+    ['Sx', 'SEXE'].each do |str|
+      index = sheet.row(headers_row).index(str)
+      sex_col_index = index if !index.nil?
+    end
+
+    return if sex_col_index.nil?
+    sex_col = sheet.column(sex_col_index + 1)
+
+    sex_col[first_row-1..sex_col.length-1].each do |row| 
+      class_array << row
+      class_sex_array << class_array.count(row)
+    end
+
+    return class_sex_array
+  end
+
+  def add_class_cat(csv_row, class_cat_array, row_index, headers)
+    csv_row[3] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "freshstart_headers" #if clas cat non présent
+    csv_row[15] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
+  end
+
+  def add_class_sex(csv_row, class_sex_array, row_index, headers)
+    csv_row[2] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "freshstart_headers" #if clas cat non présent
+    csv_row[16] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "fftri_headers" #if clas cat non présent
+  end
+
+  def average_speed_calculate(sheet, csv_row, headers_row, xl_row, headers)
+    distance_col_index = 9999
+    time_col_index = 9999
+    ['Distance', 'Dist'].each do |str|
+      index = sheet.row(headers_row).index(str)
+      distance_col_index = index if !index.nil?
+    end
+
+    ['Temps', 'Time'].each do |str|
+      index = sheet.row(headers_row).index(str)
+      time_col_index = index if !index.nil?
+    end
+
+    puts "INDEXSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+    puts time_col_index
+    puts distance_col_index
+    puts sheet.cell(xl_row, distance_col_index+1)
+    puts sheet.cell(xl_row, time_col_index+1)
+    time = sheet.cell(xl_row, time_col_index+1)
+
+    time = '0' + time if time[1] == 'h' || time[1] == ':'
+    time = '00:' + time if time[2] == ":" && time.length == 5
+    time = time.gsub(',00', '').gsub('sec', '').gsub('h', ':').gsub('m', ':')
+
+    puts time
+
+
+
+    puts "INDEXSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+
+    return csv_row[10] = 'Average not processable' if distance_col_index.nil? || time_col_index.nil?
+
+    csv_row[10] = sheet.cell(xl_row, distance_col_index + 1) / sheet.cell(xl_row, time_col_index + 1) if headers == "freshstart_headers"
+
+
+    
   end
 
 end
