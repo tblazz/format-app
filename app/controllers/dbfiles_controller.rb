@@ -64,7 +64,8 @@ class DbfilesController < ApplicationController
   end
 
   def process_file
-    col_index = dbfile_params[:col_indexs].values().map.with_index {|x| x.to_hash.values }
+    #col_index = dbfile_params[:col_indexs].values().map.with_index {|x| x.to_hash.values }
+    col_index = dbfile_params[:col_indexs].to_h.map{|k,v| v}
     empty_cols = dbfile_params[:empty_cols].values().map.with_index {|x| x.to_hash.values }
     first_row = dbfile_params[:first_row].to_i
     headers_row = dbfile_params[:headers_row].to_i

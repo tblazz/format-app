@@ -49,9 +49,10 @@ class FileGenerator
         csv_row = []
 
         average_speed_calculate(sheet, csv_row, headers_row, row, headers)
+
         # Writing inital file columns in final file selected columns
         col_index_array.each_with_index do |value, col_index|
-          csv_row[col_index_array[col_index].first.to_i-1] = sheet.cell(row, col_index+1)
+          csv_row[value.to_i-1] = sheet.cell(row, col_index+1) if csv_row[value.to_i-1].blank? #to avoid rewrite bug
         end
 
         #remove useless char, formating datas in csv row
@@ -85,8 +86,10 @@ class FileGenerator
       when "Clas."
         row[index] = row[index].to_s.gsub('.', '')
       when "Cat"
-        row[index] = row[index].gsub('M', 'V') #if row[index].is_a? String
-        row[index] = row[index][0,row[index].length-1] if (row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H')) #&& row[index].is_a? String
+        if row[index].is_a? String
+          row[index] = row[index].gsub('M', 'V')
+          row[index] = row[index][0,row[index].length-1] if (row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H'))
+        end
       when "Sexe"
         row[index] = row[index].gsub('Femme', 'F').gsub('Homme', 'H')
       when "Temps"
@@ -209,7 +212,6 @@ class FileGenerator
     dist.to_i > 500 ? dist = dist.to_i / 1000 : dist = dist.to_i
     return dist
   end
-
 
 
 end

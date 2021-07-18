@@ -5,13 +5,10 @@
         <tr>
           <% @final_headers.each_with_index do |col, index| %>
             <th scope="col">
-              <%= f.fields_for :col_indexs, index: index do |col| %>
-                <%= col.select :index, options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => true}, :class=>"form-select form-select-sm w-100px" %>
-              <% end %>
 
-              <%#= f.fields_for :col_indexs do |col| %>
-                <%#= col.select :"#{index}", options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, APP_VAR["#{@headers}"].keys.last), {:include_blank => false}, :class=>"form-select form-select-sm w-100px" %>
-              <%# end %>
+              <%= f.fields_for :col_indexs do |column| %>
+                <%= column.select :"#{index}", options_for_select(APP_VAR["#{@headers}"].map {|k, v| [v.to_s, k]}, select_headers(@rows[0], index, @headers, col)), {:include_blank => true}, :class=>"form-select form-select-sm w-100px" %>
+              <% end %>
 
             </th>
           <% end %>
