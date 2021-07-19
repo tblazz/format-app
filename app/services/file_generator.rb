@@ -57,11 +57,22 @@ class FileGenerator
 
         #remove useless char, formating datas in csv row
         format_csv_row(csv_row, csv_headers)
-        #add category rank if "Clt Cat" is not in header sheet
-        add_class_cat(csv_row, class_cat_array, row_index, headers) if !sheet.row(headers_row).include?("Clt Cat")
-        #add sex rank
-        add_class_sex(csv_row, class_sex_array, row_index, headers)
 
+        #add category rank if "Clt Cat" is not in header sheet
+        class_cat_present = false
+        ["Clt Cat", "Classement par Cat."].each do |str|
+          class_cat_present = sheet.row(headers_row).include?(str)
+          break if class_cat_present
+        end
+        add_class_cat(csv_row, class_cat_array, row_index, headers) unless class_cat_present
+
+        #add sex rank
+        class_sex_present = false
+        ["Classement par Sexe", "Clt Sex"].each do |str|
+          class_sex_present = sheet.row(headers_row).include?(str)
+          break if class_sex_present
+        end
+        add_class_sex(csv_row, class_sex_array, row_index, headers) unless class_sex_present
 
         #If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
@@ -110,6 +121,7 @@ class FileGenerator
     ["Catégorie", "Cat"].each do |str|
       index = sheet.row(headers_row).index(str)
       cat_col_index = index if !index.nil?
+      break if !index.nil?
     end
 
     return if cat_col_index.nil?
@@ -130,9 +142,10 @@ class FileGenerator
     class_sex_array = []
     sex_col_index = nil
 
-    ['Sx', 'SEXE'].each do |str|
+    ['Sx', 'SEXE', 'Sexe'].each do |str|
       index = sheet.row(headers_row).index(str)
       sex_col_index = index if !index.nil?
+      break if !index.nil?
     end
 
     return if sex_col_index.nil?
@@ -149,14 +162,14 @@ class FileGenerator
 
 
   def add_class_cat(csv_row, class_cat_array, row_index, headers)
-    csv_row[3] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "freshstart_headers" #if clas cat non présent
-    csv_row[15] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
+    csv_row[8] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "freshstart_headers" #if clas cat non présent
+    csv_row[17] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
   end
 
 
 
   def add_class_sex(csv_row, class_sex_array, row_index, headers)
-    csv_row[2] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "freshstart_headers" #if clas cat non présent
+    csv_row[10] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "freshstart_headers" #if clas cat non présent
     csv_row[16] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "fftri_headers" #if clas cat non présent
   end
 
@@ -169,19 +182,21 @@ class FileGenerator
     ['Distance', 'Dist'].each do |str|
       index = sheet.row(headers_row).index(str)
       distance_col_index = index if !index.nil?
+      break if !index.nil?
     end
 
     ['Temps', 'Time'].each do |str|
       index = sheet.row(headers_row).index(str)
       time_col_index = index if !index.nil?
+      break if !index.nil?
     end
 
     if distance_col_index.nil? || time_col_index.nil?
-      return csv_row[10] = 'Average not processable'
+      return csv_row[13] = 'Average not processable'
     elsif  sheet.cell(xl_row, distance_col_index + 1).nil? ||sheet.cell(xl_row, distance_col_index + 1).blank?
-      return csv_row[10] = 'Average not processable'
+      return csv_row[13] = 'Average not processable'
     elsif  sheet.cell(xl_row, time_col_index + 1).nil? ||sheet.cell(xl_row, time_col_index + 1).blank?
-      return csv_row[10] = 'Average not processable'
+      return csv_row[13] = 'Average not processable'
     end
 
     distance = convert_dist(sheet.cell(xl_row, distance_col_index + 1))
@@ -193,7 +208,7 @@ class FileGenerator
     hour_time = (hours.to_i * 3600 + minutes.to_i * 60 + seconds.to_f) / 3600
     average_speed = (distance / hour_time).round(2)
 
-    return csv_row[10] = average_speed if headers == "freshstart_headers" and !distance_col_index.nil? && !time_col_index.nil?
+    return csv_row[13] = average_speed if headers == "freshstart_headers" and !distance_col_index.nil? && !time_col_index.nil?
   end
 
 

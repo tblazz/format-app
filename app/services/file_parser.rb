@@ -12,8 +12,7 @@ class FileParser
     rescue Zip::Error
       sheet = Roo::Spreadsheet.open(create_temp_file(@file, wich_file))
     end
-      
-      ##### TO IMPROVE #######
+
       headers = sheet.row(1)
       row1 = sheet.row(2)
       row2 = sheet.row(3)
@@ -22,7 +21,6 @@ class FileParser
       row5 = sheet.row(6)
       column_number = headers.size
       return headers, row1, row2, row3, row4, row5
-      ##### TO IMPROVE #######
 
   end
 

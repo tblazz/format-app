@@ -39,51 +39,77 @@ module ApplicationHelper
 
   def select_headers(initial_file_headers, header_index, format, col_in_final_header)
 
-    # puts "MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
-    # puts APP_VAR["#{format}"].map {|k, v| k if v == 'Moy'}
-    # puts "MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+    freshstart_headers_array = [
+      tél_array = ['', 'Tél', 'tel', 'tél'],
+      email_array = ['', 'EMail', 'email'],
+      clas_array = ['Pl.', 'Class', 'Classement'],
+      prénom_array = ['', 'prénom'],
+      nom_array = ['nom', 'Nom'],
+      date_de_naissance_array = ['', 'DateNaissance', 'Naissance', 'datenaissance', 'naissance'],
+      pays_array = ['', 'nationalité', 'pays'],
+      doss_array = ['', 'Dossard', 'doss', 'Doss', 'doss.'],
+      clas_cat = ['Classement par Cat.'],
+      cat_array = ['Catégorie', 'Cat', 'Cat.'],
+      clas_sex = ['Classement par Sexe'],
+      sexe_array = ['', 'Sx', 'SEXE', 'Sexe'],
+      temps_array = ['', 'Time', 'Temps'],
+      moy_array = ['', 'moyenne'],
+      distance_array = ['', 'Distance', 'distance', 'Dist', 'dist', 'dist.'],
+      détail_course_array = [],
+      message_array = [],
+      nom_course_array = ['', 'course'],
+      points_array = ['', 'pts', 'point']
+    ]
 
+    fftri_headers_array = [
+      clé_épreuve_array = ['', 'course'],
+      licence_no_array = [],
+      pass_compétition_array = [],
+      dossard_array = ['', 'Dossard', 'doss', 'Doss', 'doss.'],
+      statut_array = [],
+      nom_array = ['nom', 'Nom'],
+      prénom_array = ['', 'prénom'],
+      sexe_array = ['', 'Sx', 'SEXE', 'Sexe'],
+      date_de_naissance_array = ['', 'DateNaissance', 'Naissance', 'datenaissance', 'naissance'],
+      catégorie_dage_array = [],
+      clé_club_array = [],
+      clé_prestataire_array = [],
+      rang_club_array = [],
+      point_club_array = [],
+      rang_final_array = ['Pl.', 'Class', 'Classement'],
+      temps_final_array = ['', 'Time', 'Temps'],
+      rang_par_sexe_array = ['Classement par Sexe'],
+      rang_par_catégorie_array = ['Classement par Cat.'],
+      distance_épreuve_array = ['', 'Distance', 'distance', 'Dist', 'dist', 'dist.'],
+      type_discipline_épreuve_array = [],
+      type_de_temps_array = [],
+      temps_array = [],
+      rang_temps_array = [],
+      type_discipline_épreuve_array = [],
+      type_de_temps_array = [],
+      temps_array = [],
+      rang_temps_array = [],
+      type_discipline_épreuve_array = [],
+      type_de_temps_array = [],
+      temps_array = [],
+      rang_temps_array = []
+    ]
 
-columns_array = [
-  cat_array = ['Catégorie', 'Cat', 'Cat.'],
-  clas_array = ['Pl.', 'Class', 'Classement'],
-  clas_sex = [],
-  clas_cat = [], 
-  détail_course_array = [],
-  datede_naissance_array = ['', 'DateNaissance', 'Naissance', 'datenaissance', 'naissance'],
-  distance_array = ['', 'Distance', 'distance', 'Dist', 'dist', 'dist.'],
-  doss_array = ['', 'Dossard', 'doss', 'Doss', 'doss.'],
-  email_array = ['', 'EMail', 'email'],
-  message_array = [],
-  moy_array = ['', 'moyenne'],
-  nom_array = [],
-  nom_course_array = ['', 'course'],
-  pays_array = ['', 'nationalité', 'pays'],
-  points_array = ['', 'pts', 'point'],
-  prénom_array = ['', 'prénom'],
-  sexe_array = ['', 'Sx', 'SEXE'],
-  tél_array = ['', 'Tél', 'tel', 'tél'],
-  temps_array = ['', 'Time', 'Temps']
-  ]
+    format == "freshstart_headers" ? columns_array = freshstart_headers_array : columns_array = fftri_headers_array
 
-
-  columns_array.each_with_index do |ary, index|
-    ary << APP_VAR["#{format}"][index+1]
-  end
-
-  select_value = 0
-
-  columns_array.each do |ary|
-    if !ary.index(initial_file_headers[header_index]).nil?
-      puts ary.last
-      select_value = APP_VAR["#{format}"].select {|k, v| v == ary.last}.map{|k, v| k.to_i}
+    columns_array.each_with_index do |ary, index|
+      ary << APP_VAR["#{format}"][index+1]
     end
-  end
 
-  return select_value
+    select_value = 0
 
+    columns_array.each do |ary|
+      if !ary.index(initial_file_headers[header_index]).nil?
+        select_value = APP_VAR["#{format}"].select {|k, v| v == ary.last}.map{|k, v| k.to_i}
+      end
+    end
 
-
+    return select_value
 
   end
 
