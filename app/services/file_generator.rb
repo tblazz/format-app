@@ -3,7 +3,7 @@ class FileGenerator
     @file = file
   end
 
-  def generate_file(format, col_index_array, first_row, empty_cols_array, headers_row)
+  def generate_file(format, col_index_array, first_row, empty_cols_array, headers_row, course)
     require 'roo'
     require 'roo-xls'
 
@@ -19,9 +19,9 @@ class FileGenerator
     @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
     case format
     when 1.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
+      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
     when 2.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
+      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
     end
 
     exported_file = @tmp_csv
@@ -40,7 +40,7 @@ class FileGenerator
 
 
 
-  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array)
+  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
     CSV.open(tmp_csv.path, "a+", col_sep: ";", headers: true) do |new_csv_row|
       csv_headers = APP_VAR["#{headers}"].map{|k,v| v.to_s.force_encoding('UTF-8')}
       new_csv_row << csv_headers
@@ -74,6 +74,9 @@ class FileGenerator
         end
         add_class_sex(csv_row, class_sex_array, row_index, headers) unless class_sex_present
 
+        #add course if field is written in initial view
+        add_course(csv_row, course) if headers == "freshstart_headers" && !course.blank?
+
         #If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
           csv_row[index] = empty_cols_array[index].first if !empty_cols_array[index].first.blank? 
@@ -91,7 +94,7 @@ class FileGenerator
       next if row[index].blank?
       case cell
       when "Doss." || "Dossard"
-        row[index] = row[index].delete('^0-9')
+        row[index] = row[index].to_s.delete('^0-9')
       when "Tél"
         row[index] = row[index].gsub('0', '33').gsub(' ', '') if row[index][0] == '0'
       when "Clas."
@@ -171,6 +174,14 @@ class FileGenerator
   def add_class_sex(csv_row, class_sex_array, row_index, headers)
     csv_row[10] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "freshstart_headers" #if clas cat non présent
     csv_row[16] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "fftri_headers" #if clas cat non présent
+  end
+
+
+
+  def add_course(csv_row, course)
+    csv_row[14] = course
+    csv_row[15] = course
+    csv_row[17] = course
   end
 
 

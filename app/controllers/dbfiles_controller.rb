@@ -25,7 +25,7 @@ class DbfilesController < ApplicationController
     @dbfile = Dbfile.new(dbfile_params)
     respond_to do |format|
       if @dbfile.save
-        format.html { redirect_to treatment_dbfile_path(@dbfile, format: dbfile_params[:format]), notice: "Dbfile was successfully created." }
+        format.html { redirect_to treatment_dbfile_path(@dbfile, format: dbfile_params[:format], course: dbfile_params[:distance]), notice: "Dbfile was successfully created." }
         format.json { render :show, status: :created, location: @dbfile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -57,7 +57,14 @@ class DbfilesController < ApplicationController
   end
 
   def treatment
+puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+puts params[:course]
+puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+
+
+
     @format = params[:format].to_i
+    @course = params[:course].to_s
     @rows = FileParser.new(@dbfile).parse_file("file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
     @final_headers = @rows[1]
@@ -70,7 +77,7 @@ class DbfilesController < ApplicationController
     first_row = dbfile_params[:first_row].to_i
     headers_row = dbfile_params[:headers_row].to_i
 
-    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols, headers_row)
+    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols, headers_row, dbfile_params[:course])
     
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
@@ -105,6 +112,7 @@ class DbfilesController < ApplicationController
     def dbfile_params
       params.fetch(:dbfile, {}).permit(:file,
         :format,
+        :course,
         :event_name,
         :distance,
         :sport,
