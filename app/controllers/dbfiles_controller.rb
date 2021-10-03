@@ -25,7 +25,14 @@ class DbfilesController < ApplicationController
     @dbfile = Dbfile.new(dbfile_params)
     respond_to do |format|
       if @dbfile.save
-        format.html { redirect_to treatment_dbfile_path(@dbfile, format: dbfile_params[:format], course: dbfile_params[:distance]), notice: "Dbfile was successfully created." }
+        format.html { redirect_to treatment_dbfile_path(
+            @dbfile,
+            format: dbfile_params[:format],
+            course: dbfile_params[:distance],
+            manif_key: dbfile_params[:manif_key],
+            race_key: dbfile_params[:race_key]),
+          notice: "Dbfile was successfully created." 
+        }
         format.json { render :show, status: :created, location: @dbfile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -57,14 +64,10 @@ class DbfilesController < ApplicationController
   end
 
   def treatment
-puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-puts params[:course]
-puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-
-
-
     @format = params[:format].to_i
     @course = params[:course].to_s
+    @manif_key = params[:manif_key].to_s
+    @race_key = params[:race_key].to_s
     @rows = FileParser.new(@dbfile).parse_file("file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
     @final_headers = @rows[1]
@@ -76,8 +79,17 @@ puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
     empty_cols = dbfile_params[:empty_cols].values().map.with_index {|x| x.to_hash.values }
     first_row = dbfile_params[:first_row].to_i
     headers_row = dbfile_params[:headers_row].to_i
+    manif_key = dbfile_params[:manif_key].to_s
+    race_key = dbfile_params[:race_key].to_s
 
-    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format], col_index, first_row, empty_cols, headers_row, dbfile_params[:course])
+    exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format],
+      col_index,
+      first_row,
+      empty_cols,
+      headers_row,
+      dbfile_params[:course],
+      manif_key,
+      race_key)
     
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
@@ -120,6 +132,8 @@ puts "PARAMSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
         :race_key,
         :first_row,
         :headers_row,
+        :manif_key,
+        :race_key,
         col_indexs: {}, empty_cols: {})
     end
 end

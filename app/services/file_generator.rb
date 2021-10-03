@@ -3,7 +3,7 @@ class FileGenerator
     @file = file
   end
 
-  def generate_file(format, col_index_array, first_row, empty_cols_array, headers_row, course)
+  def generate_file(format, col_index_array, first_row, empty_cols_array, headers_row, course, manif_key, race_key)
     require 'roo'
     require 'roo-xls'
 
@@ -19,9 +19,9 @@ class FileGenerator
     @tmp_csv = Tempfile.new("temp_csv")#, binmode: true)
     case format
     when 1.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
+      csv_open(sheet, col_index_array, @tmp_csv, "freshstart_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course, manif_key, race_key)
     when 2.to_s
-      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
+      csv_open(sheet, col_index_array, @tmp_csv, "fftri_headers", first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course, manif_key, race_key)
     end
 
     exported_file = @tmp_csv
@@ -40,7 +40,7 @@ class FileGenerator
 
 
 
-  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course)
+  def csv_open(sheet, col_index_array, tmp_csv, headers, first_row, empty_cols_array, headers_row, class_cat_array, class_sex_array, course, manif_key, race_key)
     CSV.open(tmp_csv.path, "a+", col_sep: ";", headers: true) do |new_csv_row|
       csv_headers = APP_VAR["#{headers}"].map{|k,v| v.to_s.force_encoding('UTF-8')}
       new_csv_row << csv_headers
@@ -76,6 +76,10 @@ class FileGenerator
 
         #add course if field is written in initial view
         add_course(csv_row, course) if headers == "freshstart_headers" && !course.blank?
+
+        #add manif and race key if fields are written in initial view
+        csv_row[0] = manif_key if !manif_key.blank? && headers == "fftri_headers"
+        csv_row[1] = race_key if !race_key.blank? && headers == "fftri_headers"
 
         #If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
