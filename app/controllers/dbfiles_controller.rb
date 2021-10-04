@@ -21,16 +21,16 @@ class DbfilesController < ApplicationController
 
   # POST /dbfiles or /dbfiles.json
   def create
-
     @dbfile = Dbfile.new(dbfile_params)
     respond_to do |format|
       if @dbfile.save
         format.html { redirect_to treatment_dbfile_path(
             @dbfile,
             format: dbfile_params[:format],
-            course: dbfile_params[:distance],
+            distance: dbfile_params[:distance],
             manif_key: dbfile_params[:manif_key],
-            race_key: dbfile_params[:race_key]),
+            race_key: dbfile_params[:race_key],
+            event_name: dbfile_params[:event_name]),
           notice: "Dbfile was successfully created." 
         }
         format.json { render :show, status: :created, location: @dbfile }
@@ -65,9 +65,11 @@ class DbfilesController < ApplicationController
 
   def treatment
     @format = params[:format].to_i
-    @course = params[:course].to_s
+    @distance = params[:distance].to_s
     @manif_key = params[:manif_key].to_s
     @race_key = params[:race_key].to_s
+    @distance = params[:distance].to_s
+    @event_name = params[:event_name].to_s
     @rows = FileParser.new(@dbfile).parse_file("file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
     @final_headers = @rows[1]
@@ -81,19 +83,23 @@ class DbfilesController < ApplicationController
     headers_row = dbfile_params[:headers_row].to_i
     manif_key = dbfile_params[:manif_key].to_s
     race_key = dbfile_params[:race_key].to_s
+    distance = dbfile_params[:distance].to_s
+    event_name = dbfile_params[:event_name].to_s
 
     exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format],
       col_index,
       first_row,
       empty_cols,
       headers_row,
-      dbfile_params[:course],
+      dbfile_params[:distance],
       manif_key,
       race_key)
-    
+
+    dbfile_params[:format] == 1 ? filename = "#{event_name}_#{distance}" : filename = "#{event_name}_#{race_key}"
+
     @dbfile.exported_file.attach(
       io: File.open(exported_file.path),
-      filename: 'raw_data.csv',
+      filename: filename + '.csv',
       content_type: 'csv'
     )
 
@@ -124,7 +130,7 @@ class DbfilesController < ApplicationController
     def dbfile_params
       params.fetch(:dbfile, {}).permit(:file,
         :format,
-        :course,
+        :distance,
         :event_name,
         :distance,
         :sport,
@@ -134,6 +140,7 @@ class DbfilesController < ApplicationController
         :headers_row,
         :manif_key,
         :race_key,
+        :distance,
         col_indexs: {}, empty_cols: {})
     end
 end

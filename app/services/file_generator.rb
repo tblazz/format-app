@@ -81,6 +81,10 @@ class FileGenerator
         csv_row[0] = manif_key if !manif_key.blank? && headers == "fftri_headers"
         csv_row[1] = race_key if !race_key.blank? && headers == "fftri_headers"
 
+        #add status to fftri format
+        csv_row[7] = "finisher"
+
+
         #If initial file has empty colmuns, we fill final file column with inputed value 
         empty_cols_array.each_with_index do |col, index|
           csv_row[index] = empty_cols_array[index].first if !empty_cols_array[index].first.blank? 
@@ -229,6 +233,9 @@ class FileGenerator
 
   
   def convert_time(time)
+
+    return seconds_to_hms(time) if time.class == Integer
+
     time = '0' + time if time[1] == 'h' || time[1] == ':'
     time = '00:' + time if time[2] == ":" && time.length == 5
     time = time.gsub(',00', '').gsub('sec', '').gsub('h', ':').gsub('m', ':')
@@ -241,6 +248,10 @@ class FileGenerator
     dist = dist.to_s.gsub('km', '')
     dist.to_i > 500 ? dist = dist.to_i / 1000 : dist = dist.to_i
     return dist
+  end
+
+  def seconds_to_hms(sec)
+    "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
   end
 
 

@@ -88,9 +88,11 @@
   <div class="row my-3">
     <div class="col">
       <%= f.hidden_field :format, value: @format %>
-      <%= f.hidden_field :course, value: @course %>
+      <%= f.hidden_field :distance, value: @distance %>
       <%= f.hidden_field :manif_key, value: @manif_key %>
       <%= f.hidden_field :race_key, value: @race_key %>
+      <%= f.hidden_field :distance, value: @distance %>
+      <%= f.hidden_field :event_name, value: @event_name %>
       <%= f.submit 'Générer le fichier', class:"btn btn-primary"%>
     </div>
   </div>
