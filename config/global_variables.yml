@@ -111,7 +111,15 @@ fftri_headers:
   30	:	"Type de temps 3"
   31	:	"Temps 3"
   32	:	"Rang temps 3"
-  33	:	"FFTRI"
+  33	:	"Type discipline épreuve 4"
+  34	:	"Type de temps 4"
+  35	:	"Temps 4"
+  36	:	"Rang temps 4"
+  37	:	"Type discipline épreuve 5"
+  38	:	"Type de temps 5"
+  39	:	"Temps 5"
+  40	:	"Rang temps 5"
+  41	:	"FFTRI"
 
 sports:
   1 : "Trail"

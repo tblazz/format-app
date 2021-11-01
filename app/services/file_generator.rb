@@ -75,7 +75,7 @@ class FileGenerator
         add_class_sex(csv_row, class_sex_array, row_index, headers) unless class_sex_present
 
         #add course if field is written in initial view
-        add_course(csv_row, course) if headers == "freshstart_headers" && !course.blank?
+        add_course(csv_row, course, headers) if !course.blank?
 
         #add manif and race key if fields are written in initial view
         csv_row[0] = manif_key if !manif_key.blank? && headers == "fftri_headers"
@@ -186,10 +186,13 @@ class FileGenerator
 
 
 
-  def add_course(csv_row, course)
-    csv_row[14] = course
-    csv_row[15] = course
-    csv_row[17] = course
+  def add_course(csv_row, course, headers)
+    if headers == "freshstart_headers"
+      csv_row[14] = course 
+      csv_row[15] = course
+      csv_row[17] = course
+    end
+    csv_row[19] = course if headers == "fftri_headers"
   end
 
 
@@ -211,11 +214,11 @@ class FileGenerator
     end
 
     if distance_col_index.nil? || time_col_index.nil?
-      return csv_row[13] = 'Average not processable'
+      return csv_row[13] = ''
     elsif  sheet.cell(xl_row, distance_col_index + 1).nil? ||sheet.cell(xl_row, distance_col_index + 1).blank?
-      return csv_row[13] = 'Average not processable'
+      return csv_row[13] = ''
     elsif  sheet.cell(xl_row, time_col_index + 1).nil? ||sheet.cell(xl_row, time_col_index + 1).blank?
-      return csv_row[13] = 'Average not processable'
+      return csv_row[13] = ''
     end
 
     distance = convert_dist(sheet.cell(xl_row, distance_col_index + 1))
@@ -231,8 +234,13 @@ class FileGenerator
   end
 
 
-  
+
   def convert_time(time)
+    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+    puts time
+    puts time.class
+    puts seconds_to_hms(time)
+    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
 
     return seconds_to_hms(time) if time.class == Integer
 
