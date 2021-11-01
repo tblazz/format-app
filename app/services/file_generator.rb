@@ -236,12 +236,6 @@ class FileGenerator
 
 
   def convert_time(time)
-    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-    puts time
-    puts time.class
-    puts seconds_to_hms(time)
-    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-
     return seconds_to_hms(time) if time.class == Integer
 
     time = '0' + time if time[1] == 'h' || time[1] == ':'

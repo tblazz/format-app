@@ -56,9 +56,6 @@ class FileParser
       when "Sexe"
         row[index] = row[index].gsub('Femme', 'F').gsub('Homme', 'H')
       when "Temps"
-        puts "TEMPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-        puts row[index]  
-        puts "TEMPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" 
         row[index] = convert_time(row[index])
       when "Distance" || "Distance épreuve"
         row[index] = row[index].to_s.gsub('km', '')
@@ -69,12 +66,6 @@ class FileParser
 
 
   def convert_time(time)
-    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-    puts time
-    puts time.class
-    puts seconds_to_hms(time)
-    puts "TIMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-
     return seconds_to_hms(time) if time.class == Integer
 
     time = '0' + time if time[1] == 'h' || time[1] == ':'
