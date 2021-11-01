@@ -116,6 +116,8 @@ class FileGenerator
         row[index] = row[index].gsub('Femme', 'F').gsub('Homme', 'H')
       when "Temps"
         row[index] = convert_time(row[index])
+      when "Temps Final"
+        row[index] = convert_time(row[index])
       when "Distance" || "Distance épreuve"
         row[index] = row[index].to_s.gsub('km', '')
         row[index] = row[index].to_i / 1000 if row[index].to_i > 500
@@ -174,14 +176,14 @@ class FileGenerator
 
   def add_class_cat(csv_row, class_cat_array, row_index, headers)
     csv_row[8] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "freshstart_headers" #if clas cat non présent
-    csv_row[17] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
+    csv_row[18] = class_cat_array[row_index] if !class_cat_array.nil? && headers == "fftri_headers" #if clas cat non présent
   end
 
 
 
   def add_class_sex(csv_row, class_sex_array, row_index, headers)
     csv_row[10] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "freshstart_headers" #if clas cat non présent
-    csv_row[16] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "fftri_headers" #if clas cat non présent
+    csv_row[17] = class_sex_array[row_index] if !class_sex_array.nil? && headers == "fftri_headers" #if clas cat non présent
   end
 
 
@@ -253,7 +255,7 @@ class FileGenerator
   end
 
   def seconds_to_hms(sec)
-    "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
+    return "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
   end
 
 
