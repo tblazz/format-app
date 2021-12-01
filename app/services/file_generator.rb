@@ -218,11 +218,11 @@ class FileGenerator
     end
 
     if distance_col_index.nil? || time_col_index.nil?
-      return csv_row[13] = ''
+      return csv_row[13] = nil
     elsif  sheet.cell(xl_row, distance_col_index + 1).nil? ||sheet.cell(xl_row, distance_col_index + 1).blank?
-      return csv_row[13] = ''
+      return csv_row[13] = nil
     elsif  sheet.cell(xl_row, time_col_index + 1).nil? ||sheet.cell(xl_row, time_col_index + 1).blank?
-      return csv_row[13] = ''
+      return csv_row[13] = nil
     end
 
     distance = convert_dist(sheet.cell(xl_row, distance_col_index + 1))

@@ -85,6 +85,7 @@ class DbfilesController < ApplicationController
     race_key = dbfile_params[:race_key].to_s
     distance = dbfile_params[:distance].to_s
     event_name = dbfile_params[:event_name].to_s
+    format_value = dbfile_params[:format]
 
     exported_file = FileGenerator.new(@dbfile).generate_file(dbfile_params[:format],
       col_index,
@@ -105,7 +106,7 @@ class DbfilesController < ApplicationController
 
     respond_to do |format| #need to add model in form to have format in client request
       if @dbfile.exported_file.attached?
-        format.html { redirect_to download_dbfile_path(@dbfile), notice: "Votre fichier a été traité" }
+        format.html { redirect_to download_dbfile_path(@dbfile, format: format_value), notice: "Votre fichier a été traité" }
         format.json { render :show, status: :created, location: @dbfile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -116,8 +117,8 @@ class DbfilesController < ApplicationController
 
   def download
     @format = params[:format].to_i
-    @rows = FileParser.new(@dbfile).parse_file("exported_file")
     @format == 1 ? @headers = "freshstart_headers" : @headers = "fftri_headers"
+    @rows = FileParser.new(@dbfile).parse_file("exported_file")
   end
 
   private
