@@ -98,27 +98,27 @@ class FileGenerator
 
 
   def format_csv_row(row, headers)
+    #["POSITION", "TEMPS", "EQUIPE", "NOM", "DOSSARD", "CATEGORIE", "CLASS/CATEGORIE"]
     headers.each_with_index do |cell, index|
       next if row[index].blank?
-      case cell
-      when "Doss." || "Dossard"
+      if cell == "Doss." || cell == "Dossard" || cell == "DOSSARD"
         row[index] = row[index].to_s.delete('^0-9')
-      when "Tél"
+      elsif cell == "Tél"
         row[index] = row[index].gsub('0', '33').gsub(' ', '') if row[index][0] == '0'
-      when "Clas."
+      elsif cell == "Clas." || cell == "POSITION"
         row[index] = row[index].to_s.gsub('.', '')
-      when "Cat"
+      elsif cell == "Cat" || cell =="CATEGORIE"
         if row[index].is_a? String
           row[index] = row[index].gsub('M', 'V')
           row[index] = row[index][0,row[index].length-1] if (row[index].end_with?('F') || row[index].end_with?('M') || row[index].end_with?('H'))
         end
-      when "Sexe"
+      elsif cell == "Sexe" || cell == "SEXE"
         row[index] = row[index].gsub('Femme', 'F').gsub('Homme', 'H')
-      when "Temps"
+      elsif cell == "Temps" || cell == "TEMPS"
         row[index] = convert_time(row[index])
-      when "Temps Final"
+      elsif cell == "Temps Final"
         row[index] = convert_time(row[index])
-      when "Distance" || "Distance épreuve"
+      elsif cell == "Distance" || cell == "Distance épreuve"
         row[index] = row[index].to_s.gsub('km', '')
         row[index] = row[index].to_i / 1000 if row[index].to_i > 500
       end
