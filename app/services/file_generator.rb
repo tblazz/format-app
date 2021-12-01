@@ -121,6 +121,8 @@ class FileGenerator
       elsif cell == "Distance" || cell == "Distance épreuve"
         row[index] = row[index].to_s.gsub('km', '')
         row[index] = row[index].to_i / 1000 if row[index].to_i > 500
+      # elsif row[index].is_a? String
+      #   row[index] = row[index].gsub(/,\s+\"/,',\"').gsub('"','')
       end
     end
   end
